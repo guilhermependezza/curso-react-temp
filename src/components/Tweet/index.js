@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './tweet.css'
 import { API_URL } from '../../config';
+import { TweetsService } from '../../services/TweetsService';
 
 class Tweet extends Component {
     constructor(props) {
@@ -20,11 +21,10 @@ class Tweet extends Component {
             totalLikes: likeado ? totalLikes - 1 : totalLikes + 1
         });
         
-
-        const token = localStorage.getItem('TOKEN');
-        fetch(`${API_URL}/tweets/${this.props.id}/like?X-AUTH-TOKEN=${token}`, { method: 'POST' })
-            .then(res => res.json())
-            .then(console.log)
+        TweetsService
+            .like(this.props.id)
+            .then(console.log);
+        
     }
 
     handleTweetClick = () => {

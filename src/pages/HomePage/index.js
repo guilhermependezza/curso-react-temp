@@ -10,6 +10,7 @@ import { API_URL } from '../../config';
 import { Modal } from '../../components/Modal';
 import { ReactReduxContext } from 'react-redux';
 import { TweetsThunkActions } from '../../store/ducks/tweets';
+import { TweetsService } from '../../services/TweetsService';
 
 
 class HomePage extends Component {
@@ -41,14 +42,7 @@ class HomePage extends Component {
 
     if(this.state.novoTweet.length > 0) {
       const token = localStorage.getItem('TOKEN')
-      fetch(`${API_URL}/tweets/?X-AUTH-TOKEN=${token}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ conteudo: this.state.novoTweet })
-      })
-      .then(res => res.json())
+      TweetsService.adiciona(this.state.novoTweet)
       .then(tweet => {
         console.log(tweet)
         this.setState({
@@ -61,9 +55,8 @@ class HomePage extends Component {
 
   removeTweet = (id) => {
     const newTweets = this.state.tweets.filter(tweet => tweet._id !== id);
-    const token = localStorage.getItem('TOKEN')
-    fetch(`${API_URL}/tweets/${id}?X-AUTH-TOKEN=${token}`, { method: 'DELETE' })
-      .then(res => res.json())
+    TweetsService
+      .remove(id)
       .then(response => {
         console.log(response)
         this.setState({ tweets: newTweets })
