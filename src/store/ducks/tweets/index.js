@@ -6,11 +6,9 @@ import {
 
 import { TweetsService } from '../../../services/TweetsService';
 
-
 export const TweetsThunkActions = {
   carregaTweets: () => {
     return dispatch => {
-      const token = localStorage.getItem('TOKEN');
       dispatch({ type: CARREGA_TWEETS });
 
       TweetsService

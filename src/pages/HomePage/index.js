@@ -6,7 +6,6 @@ import Dashboard from '../../components/Dashboard'
 import Widget from '../../components/Widget'
 import TrendsArea from '../../components/TrendsArea'
 import Tweet from '../../components/Tweet'
-import { API_URL } from '../../config';
 import { Modal } from '../../components/Modal';
 import { ReactReduxContext } from 'react-redux';
 import { TweetsThunkActions } from '../../store/ducks/tweets';
@@ -41,15 +40,14 @@ class HomePage extends Component {
     event.preventDefault();
 
     if(this.state.novoTweet.length > 0) {
-      const token = localStorage.getItem('TOKEN')
       TweetsService.adiciona(this.state.novoTweet)
-      .then(tweet => {
-        console.log(tweet)
-        this.setState({
-          tweets: [tweet, ...this.state.tweets],
-          novoTweet: ''
+        .then(tweet => {
+          console.log(tweet)
+          this.setState({
+            tweets: [tweet, ...this.state.tweets],
+            novoTweet: ''
+          })
         })
-      })
     }
   }
 
