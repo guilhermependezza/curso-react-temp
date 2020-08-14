@@ -17,7 +17,6 @@ export const LoginService = {
       }
       return response.json();
     }).then(dadosServidor => {
-      console.log(dadosServidor)
       if(dadosServidor.token) {
         localStorage.setItem('TOKEN', dadosServidor.token);
         return;

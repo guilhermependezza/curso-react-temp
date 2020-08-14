@@ -7,7 +7,6 @@ import classnames from 'classnames';
 export const Modal = ({ children, isOpen, onClose }) => {
 
   function handleOverlayClick(event) {
-    console.log(event.target);
     const isModal = event.target.classList.contains(styles.modal)
     if(isModal && onClose) {
       onClose()

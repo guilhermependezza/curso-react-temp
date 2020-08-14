@@ -1,38 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './tweet.css'
-import { TweetsService } from '../../services/TweetsService';
 
 class Tweet extends Component {
-    constructor(props) {
-        super();
-
-        this.state = {
-            likeado: props.likeado,
-            totalLikes: props.totalLikes
-        }
-    }
-
-    likeHandler = () => {
-        const { likeado, totalLikes } = this.state;
-        this.setState({
-            likeado: !likeado,
-            totalLikes: likeado ? totalLikes - 1 : totalLikes + 1
-        });
-        
-        TweetsService
-            .like(this.props.id)
-            .then(console.log);
-        
-    }
-
     handleTweetClick = () => {
         this.props.onClickTweet && this.props.onClickTweet()
     }
 
     render() {
-        const { usuario, texto, id } = this.props;
-        const { likeado, totalLikes } = this.state;
+        const { usuario, texto, id, likeado, totalLikes } = this.props;
         const liked = likeado ? 'iconHeart--active' : '';
         return (
             <article className="tweet">
@@ -48,7 +24,7 @@ class Tweet extends Component {
                 </p>
                 <footer className="tweet__footer">
                     
-                    <button className="btn btn--clean" onClick={this.likeHandler}>
+                    <button className="btn btn--clean" onClick={this.props.likeHandler}>
                         <svg className={`icon icon--small iconHeart ${liked}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.5 47.5">
                             <defs>
                                 <clipPath id="a">

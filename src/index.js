@@ -18,11 +18,8 @@ import "./assets/css/novoTweet.css";
 
 import { NotificacaoContextProvider } from './contexts/NotificacaoContext';
 
-import Teste from './Teste';
 import * as serviceWorker from "./serviceWorker";
 import Roteamento from "./routes";
-
-console.log(store)
 
 ReactDOM.render(
   <Provider store={store}>

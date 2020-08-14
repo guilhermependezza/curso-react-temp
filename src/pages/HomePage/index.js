@@ -5,11 +5,9 @@ import NavMenu from '../../components/NavMenu'
 import Dashboard from '../../components/Dashboard'
 import Widget from '../../components/Widget'
 import TrendsArea from '../../components/TrendsArea'
-import Tweet from '../../components/Tweet'
-import { Modal } from '../../components/Modal';
 import { ReactReduxContext } from 'react-redux';
 import { TweetsThunkActions } from '../../store/ducks/tweets';
-import { TweetsService } from '../../services/TweetsService';
+import TweetsContainer from '../../containers/TweetsContainer';
 
 
 class HomePage extends Component {
@@ -19,8 +17,7 @@ class HomePage extends Component {
 
     this.state = {
       novoTweet: '',
-      tweets: [],
-      tweetAtivoNoModal: {}
+      totalTweets: 0
     }
     this.usuario = '@guilherme';
   }
@@ -29,7 +26,7 @@ class HomePage extends Component {
     this.context.store.subscribe(() => {
       const state = this.context.store.getState().tweets
       this.setState({
-        tweets: state.data
+        totalTweets: state.data.length
       })
     });
 
@@ -40,54 +37,10 @@ class HomePage extends Component {
     event.preventDefault();
 
     if(this.state.novoTweet.length > 0) {
-      TweetsService.adiciona(this.state.novoTweet)
-        .then(tweet => {
-          console.log(tweet)
-          this.setState({
-            tweets: [tweet, ...this.state.tweets],
-            novoTweet: ''
-          })
-        })
+        this.context.store
+        .dispatch(TweetsThunkActions.addTweet(this.state.novoTweet))
+        .then(() => this.setState({ novoTweet: '' }))
     }
-  }
-
-  removeTweet = (id) => {
-    const newTweets = this.state.tweets.filter(tweet => tweet._id !== id);
-    TweetsService
-      .remove(id)
-      .then(response => {
-        console.log(response)
-        this.setState({ tweets: newTweets })
-        this.fechaModal();
-      });
-  }
-
-  renderTweets = () => {
-    const mensagem = 'Crie um tweet';
-    return this.state.tweets.length ? this.state.tweets.map((tweet) => (
-      <Tweet 
-        key={tweet._id}
-        id={tweet._id}
-        likeado={tweet.likeado}
-        removivel={tweet.removivel}
-        totalLikes={tweet.totalLikes}
-        onClickTweet={() => this.abreModal(tweet)}
-        usuario={tweet.usuario}
-        removeHandler={this.removeTweet}
-        texto={tweet.conteudo} />
-    )) : mensagem
-  }
-
-  abreModal = (tweet) => {
-    this.setState({
-      tweetAtivoNoModal: tweet
-    })
-  }
-
-  fechaModal = () => {
-    this.setState({
-      tweetAtivoNoModal: {}
-    })
   }
 
   render() {
@@ -100,7 +53,7 @@ class HomePage extends Component {
     return (
       <Fragment>
         <Helmet>
-          <title>Twitelum - ({`${this.state.tweets.length}`})</title>
+          <title>Twitelum - ({`${this.state.totalTweets}`})</title>
         </Helmet>
         <Cabecalho>
           <NavMenu usuario={this.usuario} />
@@ -129,29 +82,10 @@ class HomePage extends Component {
           </Dashboard>
           <Dashboard posicao="centro">
             <Widget>
-              <div className="tweetsArea">
-                {this.renderTweets()}                
-              </div>
+              <TweetsContainer />
             </Widget>
           </Dashboard>
         </div>
-        <Modal
-          isOpen={!!this.state.tweetAtivoNoModal._id}
-          onClose={this.fechaModal}
-          >
-            {() => (
-              <Tweet 
-                key={this.state.tweetAtivoNoModal._id}
-                id={this.state.tweetAtivoNoModal._id}
-                likeado={this.state.tweetAtivoNoModal.likeado}
-                removivel={this.state.tweetAtivoNoModal.removivel}
-                totalLikes={this.state.tweetAtivoNoModal.totalLikes}
-                usuario={this.state.tweetAtivoNoModal.usuario}
-                removeHandler={() => this.removeTweet(this.state.tweetAtivoNoModal._id)}
-                texto={this.state.tweetAtivoNoModal.conteudo}
-              />
-            )}
-        </Modal>
       </Fragment>
     );
   }
